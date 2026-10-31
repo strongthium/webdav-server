@@ -1,0 +1,42 @@
+<Window x:Class="Strongthium.WebDavServer.AdminApp.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="webdav-server admin"
+        Width="1180" Height="780" MinWidth="880" MinHeight="520"
+        WindowStartupLocation="CenterScreen">
+  <!-- Laid out like Windows' own Settings: the pages down the side, the page beside them on a layer of its own. Each page is
+       made the first time it's shown. Until a server is connected to, there's only the page that connects. -->
+  <Grid>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="220" />
+      <ColumnDefinition Width="*" />
+    </Grid.ColumnDefinitions>
+
+    <DockPanel Margin="10,6,10,14">
+      <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="12,6,0,22">
+        <Image x:Name="Logo" Width="30" Height="30" />
+        <TextBlock Text="webdav-server" FontSize="15" FontWeight="SemiBold" VerticalAlignment="Center" Margin="12,0,0,0" />
+      </StackPanel>
+      <StackPanel DockPanel.Dock="Bottom" Margin="10,0,0,0">
+        <TextBlock x:Name="ConnectedTo" Style="{StaticResource Caption}" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" Margin="0,0,0,8" />
+        <Button x:Name="DisconnectButton" Content="Disconnect" Padding="8,5" HorizontalAlignment="Stretch" Click="Disconnect_Click" Visibility="Collapsed" />
+      </StackPanel>
+      <!-- In one panel, so that they are one group of choices. -->
+      <StackPanel x:Name="Nav" IsEnabled="False">
+        <RadioButton x:Name="StatusNav" Style="{StaticResource NavItem}" Tag="&#xE9D9;" Content="Status" Checked="Nav_Checked" />
+        <RadioButton x:Name="AccountsNav" Style="{StaticResource NavItem}" Tag="&#xE716;" Content="Accounts" Checked="Nav_Checked" />
+        <RadioButton x:Name="PathsNav" Style="{StaticResource NavItem}" Tag="&#xE8B7;" Content="Paths" Checked="Nav_Checked" />
+        <RadioButton x:Name="AccessNav" Style="{StaticResource NavItem}" Tag="&#xE72E;" Content="Access" Checked="Nav_Checked" />
+        <RadioButton x:Name="ProxyNav" Style="{StaticResource NavItem}" Tag="&#xE968;" Content="Proxy" Checked="Nav_Checked" />
+        <RadioButton x:Name="BansNav" Style="{StaticResource NavItem}" Tag="&#xE8F8;" Content="Bans" Checked="Nav_Checked" />
+        <RadioButton x:Name="LogNav" Style="{StaticResource NavItem}" Tag="&#xE81C;" Content="Log" Checked="Nav_Checked" />
+        <RadioButton x:Name="AboutNav" Style="{StaticResource NavItem}" Tag="&#xE946;" Content="About" Checked="Nav_Checked" />
+      </StackPanel>
+    </DockPanel>
+
+    <Border Grid.Column="1" Background="{DynamicResource LayerFillColorDefaultBrush}" BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+            BorderThickness="1,1,0,0" CornerRadius="8,0,0,0">
+      <ContentControl x:Name="Page" Focusable="False" IsTabStop="False" />
+    </Border>
+  </Grid>
+</Window>

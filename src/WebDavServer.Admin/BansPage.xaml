@@ -1,0 +1,56 @@
+<UserControl x:Class="Strongthium.WebDavServer.AdminApp.BansPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <DockPanel Margin="32,28,32,24">
+    <StackPanel DockPanel.Dock="Top" Margin="0,0,0,12">
+      <DockPanel>
+        <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
+          <Button Content="Lift the ban" Style="{DynamicResource AccentButtonStyle}" Padding="14,6" Margin="0,0,8,0" Click="Lift_Click" />
+          <Button Content="Refresh" Padding="12,6" Click="Refresh_Click" />
+        </StackPanel>
+        <TextBlock Text="Bans" Style="{StaticResource PageTitle}" />
+      </DockPanel>
+      <TextBlock Style="{StaticResource Muted}" Margin="0,4,0,0" TextWrapping="Wrap"
+                 Text="Who's being turned away. From everything is all of WebDAV and Nextcloud, and those are closed at the door, before TLS. From a path is that path alone. The admin port has its own bans, so a ban on WebDAV can't lock you out of here." />
+      <TextBlock x:Name="ProblemText" Style="{StaticResource Problem}" Margin="0,8,0,0" />
+    </StackPanel>
+    <Border DockPanel.Dock="Bottom" Style="{StaticResource Card}" Margin="0,12,0,0">
+      <StackPanel>
+        <TextBlock Text="Ban an address" FontWeight="SemiBold" Margin="0,0,0,8" />
+        <Grid>
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*" />
+            <ColumnDefinition Width="8" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="8" />
+            <ColumnDefinition Width="110" />
+            <ColumnDefinition Width="8" />
+            <ColumnDefinition Width="2*" />
+            <ColumnDefinition Width="8" />
+            <ColumnDefinition Width="Auto" />
+          </Grid.ColumnDefinitions>
+          <TextBox x:Name="NetworkBox" AutomationProperties.Name="Address or network to ban" ToolTip="An address or a network: 203.0.113.7, 203.0.113.0/24, 2001:db8::/32" />
+          <ComboBox x:Name="ScopeBox" Grid.Column="2" AutomationProperties.Name="Banned from" />
+          <TextBox x:Name="MinutesBox" Grid.Column="4" AutomationProperties.Name="Minutes, empty for forever" ToolTip="How many minutes: empty never ends" />
+          <TextBox x:Name="ReasonBox" Grid.Column="6" AutomationProperties.Name="Reason" ToolTip="Why, for whoever reads this later" />
+          <Button Grid.Column="8" Content="Ban" Padding="16,5" Click="Add_Click" />
+        </Grid>
+        <TextBlock Style="{StaticResource Caption}" Margin="0,4,0,0" Text="Address or network, banned from, minutes (empty never ends), and why." />
+      </StackPanel>
+    </Border>
+    <ListView x:Name="List" BorderThickness="0" Background="Transparent" SelectionMode="Single">
+      <ListView.ItemContainerStyle>
+        <Style TargetType="ListViewItem" BasedOn="{StaticResource {x:Static GridView.GridViewItemContainerStyleKey}}" />
+      </ListView.ItemContainerStyle>
+      <ListView.View>
+        <GridView>
+          <GridViewColumn Header="Address" Width="170" DisplayMemberBinding="{Binding Network}" />
+          <GridViewColumn Header="Banned from" Width="120" DisplayMemberBinding="{Binding Scope}" />
+          <GridViewColumn Header="Since" Width="125" DisplayMemberBinding="{Binding Since}" />
+          <GridViewColumn Header="Until" Width="125" DisplayMemberBinding="{Binding Until}" />
+          <GridViewColumn Header="Why" Width="340" DisplayMemberBinding="{Binding Reason}" />
+        </GridView>
+      </ListView.View>
+    </ListView>
+  </DockPanel>
+</UserControl>

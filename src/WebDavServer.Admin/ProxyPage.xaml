@@ -1,0 +1,52 @@
+<UserControl x:Class="Strongthium.WebDavServer.AdminApp.ProxyPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <ScrollViewer VerticalScrollBarVisibility="Auto">
+    <StackPanel Margin="32,28,32,24" MaxWidth="860" HorizontalAlignment="Left">
+      <DockPanel Margin="0,0,0,4">
+        <Button x:Name="SaveButton" DockPanel.Dock="Right" Content="Save" Style="{DynamicResource AccentButtonStyle}" Padding="20,6" VerticalAlignment="Center" Click="Save_Click" />
+        <TextBlock Text="Proxy" Style="{StaticResource PageTitle}" />
+      </DockPanel>
+      <TextBlock Style="{StaticResource Muted}" TextWrapping="Wrap" Margin="0,0,0,12"
+                 Text="Behind nginx, Cloudflare or both, the socket's other end is the proxy, so bans and whitelists have to go by what the proxy says about who's connecting. It's only believed from the proxies named here: from anyone else, those headers are ignored." />
+      <TextBlock x:Name="ProblemText" Style="{StaticResource Problem}" Margin="0,0,0,12" />
+      <TextBlock x:Name="SavedText" Style="{StaticResource Caption}" Margin="0,0,0,12" Visibility="Collapsed" Text="Saved. It's in force now." />
+
+      <Border Style="{StaticResource Card}" Margin="0,0,0,12" Padding="16,12,16,16">
+        <StackPanel>
+          <TextBlock Text="Trusted proxies" Style="{StaticResource Field}" Margin="0,0,0,4" />
+          <TextBox x:Name="ProxiesBox" AcceptsReturn="True" MinHeight="64" MaxHeight="160" VerticalScrollBarVisibility="Auto" FontFamily="Cascadia Mono, Consolas" AutomationProperties.Name="Trusted proxies" />
+          <TextBlock Style="{StaticResource Caption}" Margin="0,4,0,0" Text="One a line: an address or a network. For nginx on the same machine: 127.0.0.1" />
+
+          <CheckBox x:Name="RealIpBox" Content="The proxy says who's connecting with X-Real-IP alone" Margin="0,14,0,0" />
+          <TextBlock Style="{StaticResource Caption}" Margin="26,2,0,0" Text="Tick this only if your proxy sets X-Real-IP and not X-Forwarded-For. It's one or the other: the one that isn't set is whatever a client wrote." />
+
+          <CheckBox x:Name="ClearBox" Content="Take logins from a proxy on another machine over plain HTTP" Margin="0,14,0,0" />
+          <TextBlock Style="{StaticResource Caption}" Margin="26,2,0,0" Text="Passwords then cross that network in the clear. Only for a network you trust with them, like the one between containers on a machine. Otherwise, have the proxy connect with TLS. A proxy on this machine needs neither." />
+
+          <CheckBox x:Name="CloudflareBox" Content="Behind Cloudflare" Margin="0,14,0,0" />
+          <TextBlock x:Name="CloudflareText" Style="{StaticResource Caption}" Margin="26,2,0,0" />
+          <Button x:Name="CloudflareButton" Content="Update Cloudflare's addresses now" Padding="10,5" Margin="26,8,0,0" HorizontalAlignment="Left" Click="Cloudflare_Click" />
+
+          <CheckBox x:Name="RequireBox" Content="Close any connection that doesn't come through a proxy" Margin="0,14,0,0" />
+          <TextBlock Style="{StaticResource Caption}" Margin="26,2,0,0" Text="So that nobody can reach the server directly and go around the proxy. Connections from this machine are still let through." />
+
+          <TextBlock Text="The address clients use" Style="{StaticResource Field}" />
+          <TextBox x:Name="PublicUrlBox" AutomationProperties.Name="Public address" />
+          <TextBlock Style="{StaticResource Caption}" Margin="0,4,0,0" Text="Like https://files.example.com. Nextcloud clients are sent to it to log in. Empty goes by what each request says." />
+        </StackPanel>
+      </Border>
+
+      <Border Style="{StaticResource Card}" Margin="0,0,0,12" Padding="16,12,16,16">
+        <StackPanel>
+          <TextBlock Text="For nginx" Style="{StaticResource Heading}" Margin="0,0,0,8" />
+          <TextBox x:Name="NginxBox" IsReadOnly="True" FontFamily="Cascadia Mono, Consolas" FontSize="12" AcceptsReturn="True" TextWrapping="NoWrap" HorizontalScrollBarVisibility="Auto" />
+          <TextBlock Style="{StaticResource Caption}" Margin="0,6,0,0"
+                     Text="To have a plain listener behind it, add { &quot;address&quot;: &quot;127.0.0.1&quot;, &quot;port&quot;: 8080, &quot;tls&quot;: false } to listen in webdav-server.json, and restart. Logins over it are refused unless nginx says the client's own connection was TLS." />
+          <TextBlock Text="For Cloudflare" Style="{StaticResource Heading}" Margin="0,16,0,4" />
+          <TextBlock TextWrapping="Wrap" Text="Set SSL/TLS to Full (strict), with a real or Cloudflare origin certificate on the server. Flexible sends everything between Cloudflare and the server in the clear, so logins are refused. Cloudflare's free plans limit a single request to 100 MB: Nextcloud clients get past that by uploading in chunks, and other WebDAV clients can't." />
+        </StackPanel>
+      </Border>
+    </StackPanel>
+  </ScrollViewer>
+</UserControl>

@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- What the server and the admin window have in common: what they say to each other, how address rules are read, and
+       updating from GitHub. It holds no passwords, files or sockets. -->
+  <PropertyGroup>
+    <RootNamespace>Strongthium.WebDavServer</RootNamespace>
+  </PropertyGroup>
+</Project>

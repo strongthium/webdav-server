@@ -1,0 +1,55 @@
+<Window x:Class="Strongthium.WebDavServer.AdminApp.MountDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Path" Width="560" SizeToContent="Height" ResizeMode="NoResize"
+        WindowStartupLocation="CenterOwner" ShowInTaskbar="False">
+  <StackPanel Margin="24,8,24,16">
+    <TextBlock Text="Path" Style="{StaticResource Field}" />
+    <TextBox x:Name="PathBox" AutomationProperties.Name="Path" />
+    <TextBlock Style="{StaticResource Caption}" Margin="0,4,0,0" Text="A single name, like /team, or / for the server's own address. Clients connect to https://server/team/, and Nextcloud clients to the same address." />
+
+    <TextBlock Text="Where files are kept" Style="{StaticResource Field}" />
+    <RadioButton x:Name="ByUser" GroupName="Layout" Content="By account: each account has its own, the same on every path kept this way" />
+    <RadioButton x:Name="ByPath" GroupName="Layout" Content="By path: everyone allowed here shares one set of files" Margin="0,4,0,0" />
+    <RadioButton x:Name="ByBoth" GroupName="Layout" Content="By both: each account has its own on this path alone" Margin="0,4,0,0" />
+
+    <TextBlock Text="In a folder of its own on the server (optional)" Style="{StaticResource Field}" />
+    <TextBox x:Name="RootBox" AutomationProperties.Name="Folder on the server" />
+    <TextBlock Style="{StaticResource Caption}" Margin="0,4,0,0" Text="A whole path, on the server: /srv/team. Empty keeps files in the data folder. The server's account has to be able to write there." />
+
+    <TextBlock Text="Failed logins" Style="{StaticResource Field}" />
+    <Grid>
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*" />
+        <ColumnDefinition Width="10" />
+        <ColumnDefinition Width="*" />
+        <ColumnDefinition Width="10" />
+        <ColumnDefinition Width="*" />
+      </Grid.ColumnDefinitions>
+      <StackPanel>
+        <TextBox x:Name="FailuresBox" AutomationProperties.Name="Failed logins before a ban" />
+        <TextBlock Style="{StaticResource Caption}" Margin="0,4,0,0" Text="failures ban an address (0 never does)" />
+      </StackPanel>
+      <StackPanel Grid.Column="2">
+        <TextBox x:Name="WindowBox" AutomationProperties.Name="Minutes failures are counted over" />
+        <TextBlock Style="{StaticResource Caption}" Margin="0,4,0,0" Text="minutes they're counted over" />
+      </StackPanel>
+      <StackPanel Grid.Column="4">
+        <TextBox x:Name="BanBox" AutomationProperties.Name="Minutes a ban lasts" />
+        <TextBlock Style="{StaticResource Caption}" Margin="0,4,0,0" Text="minutes the ban lasts (1440 is a day)" />
+      </StackPanel>
+    </Grid>
+
+    <TextBlock Text="Quota, in GB, when kept by path" Style="{StaticResource Field}" />
+    <TextBox x:Name="QuotaBox" Width="140" HorizontalAlignment="Left" AutomationProperties.Name="Quota in gigabytes" />
+
+    <CheckBox x:Name="EnabledBox" Content="This path is open" Margin="0,14,0,0" />
+    <CheckBox x:Name="NextcloudBox" Content="Nextcloud clients can connect here as well as WebDAV clients" Margin="0,6,0,0" />
+
+    <TextBlock x:Name="ProblemText" Style="{StaticResource Problem}" Margin="0,12,0,0" />
+    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,16,0,0">
+      <Button x:Name="SaveButton" Content="Save" Style="{DynamicResource AccentButtonStyle}" Padding="20,6" Margin="0,0,8,0" IsDefault="True" Click="Save_Click" />
+      <Button Content="Close" Padding="16,6" IsCancel="True" />
+    </StackPanel>
+  </StackPanel>
+</Window>

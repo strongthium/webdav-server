@@ -1,0 +1,50 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- webdav-server-admin: the window for looking after a webdav-server, on this PC or across the network. Windows only, in WPF
+       with Windows' own Fluent theme, so the program itself is small. Published as one file for x64 PCs that runs on the .NET 10
+       Desktop Runtime installed on the PC: build.ps1 and .github/workflows/release.yml make it. -->
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <RuntimeIdentifiers>win-x64</RuntimeIdentifiers>
+    <UseWPF>true</UseWPF>
+    <AssemblyName>webdav-server-admin</AssemblyName>
+    <RootNamespace>Strongthium.WebDavServer.AdminApp</RootNamespace>
+    <ApplicationIcon>Assets\webdav-server-admin.ico</ApplicationIcon>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <!-- Program.Main starts the App: it reads the command line first. -->
+    <EnableDefaultApplicationDefinition>false</EnableDefaultApplicationDefinition>
+    <!-- WPF0001: the Fluent theme is experimental in .NET 10. -->
+    <NoWarn>$(NoWarn);WPF0001</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(RuntimeIdentifier)' != ''">
+    <!-- The runtime isn't inside it: the .NET 10 Desktop Runtime on the PC runs it. -->
+    <SelfContained>false</SelfContained>
+    <PublishSingleFile>true</PublishSingleFile>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    <DebugType>none</DebugType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- WPF leaves these out of the implicit usings (it has a Path of its own, in Shapes). -->
+    <Using Include="System.IO" />
+    <Using Include="System.Net.Http" />
+  </ItemGroup>
+
+  <!-- A release is the one program: no debug symbols beside it. -->
+  <Target Name="LeaveOut" AfterTargets="ComputeResolvedFilesToPublishList">
+    <ItemGroup>
+      <ResolvedFileToPublish Remove="@(ResolvedFileToPublish)" Condition="'%(Extension)' == '.pdb'" />
+    </ItemGroup>
+  </Target>
+
+  <ItemGroup>
+    <Resource Include="Assets\webdav-server-admin.png" />
+    <Resource Include="Assets\strongthium-banner.jpg" />
+    <Resource Include="Assets\webdav-server-admin.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\WebDavServer.Shared\WebDavServer.Shared.csproj" />
+  </ItemGroup>
+</Project>

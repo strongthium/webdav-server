@@ -1,0 +1,35 @@
+<UserControl x:Class="Strongthium.WebDavServer.AdminApp.AccountsPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <DockPanel Margin="32,28,32,24">
+    <StackPanel DockPanel.Dock="Top" Margin="0,0,0,12">
+      <DockPanel>
+        <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
+          <Button x:Name="AddButton" Content="Add an account" Style="{DynamicResource AccentButtonStyle}" Padding="14,6" Margin="0,0,8,0" Click="Add_Click" />
+          <Button x:Name="EditButton" Content="Change" Padding="12,6" Margin="0,0,8,0" Click="Edit_Click" />
+          <Button x:Name="DeleteButton" Content="Delete" Padding="12,6" Click="Delete_Click" />
+        </StackPanel>
+        <TextBlock Text="Accounts" Style="{StaticResource PageTitle}" />
+      </DockPanel>
+      <TextBlock Style="{StaticResource Muted}" Margin="0,4,0,0" TextWrapping="Wrap"
+                 Text="Who can log in, on which paths, and from where. Deleting an account leaves its files on the server." />
+      <TextBlock x:Name="ProblemText" Style="{StaticResource Problem}" Margin="0,8,0,0" />
+    </StackPanel>
+    <ListView x:Name="List" BorderThickness="0" Background="Transparent" SelectionMode="Single" MouseDoubleClick="Edit_Click">
+      <ListView.ItemContainerStyle>
+        <Style TargetType="ListViewItem" BasedOn="{StaticResource {x:Static GridView.GridViewItemContainerStyleKey}}" />
+      </ListView.ItemContainerStyle>
+      <ListView.View>
+        <GridView>
+          <GridViewColumn Header="Name" Width="130" DisplayMemberBinding="{Binding Name}" />
+          <GridViewColumn Header="Shown as" Width="100" DisplayMemberBinding="{Binding DisplayName}" />
+          <GridViewColumn Header="State" Width="115" DisplayMemberBinding="{Binding State}" />
+          <GridViewColumn Header="Paths" Width="185" DisplayMemberBinding="{Binding Paths}" />
+          <GridViewColumn Header="May log in from" Width="160" DisplayMemberBinding="{Binding Whitelist}" />
+          <GridViewColumn Header="Quota" Width="70" DisplayMemberBinding="{Binding Quota}" />
+          <GridViewColumn Header="App passwords" Width="115" DisplayMemberBinding="{Binding AppPasswords}" />
+        </GridView>
+      </ListView.View>
+    </ListView>
+  </DockPanel>
+</UserControl>

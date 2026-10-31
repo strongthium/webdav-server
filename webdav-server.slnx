@@ -1,0 +1,10 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/WebDavServer.Shared/WebDavServer.Shared.csproj" />
+    <Project Path="src/WebDavServer/WebDavServer.csproj" />
+    <Project Path="src/WebDavServer.Admin/WebDavServer.Admin.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/WebDavServer.Tests/WebDavServer.Tests.csproj" />
+  </Folder>
+</Solution>
