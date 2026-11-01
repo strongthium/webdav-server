@@ -62,7 +62,7 @@ internal static partial class Program
         switch (command)
         {
             case "--version":
-                Console.WriteLine(Updater.RunningVersion.ToString(3));
+                Console.WriteLine(Updater.RunningVersion.ToString(4));
                 return 0;
             case "--about":
                 return await AboutCommand.AboutAsync(yes);
@@ -91,7 +91,7 @@ internal static partial class Program
         var app = ServerApp.Build(folder, config);
         app.State.LogLine = line => Console.WriteLine(line);
         await app.StartAsync();
-        Console.WriteLine($"webdav-server {Updater.RunningVersion.ToString(3)}, data in {folder}");
+        Console.WriteLine($"webdav-server {Updater.RunningVersion.ToString(4)}, data in {folder}");
         foreach (var address in app.DavAddresses) Console.WriteLine($"WebDAV and Nextcloud on {address}");
         Console.WriteLine($"Admin on {app.AdminAddress}, certificate SHA-256 {TlsCertificates.Fingerprint(app.AdminCertificate.Current())}");
         if (app.State.Database.LoadAdmin() is { MustChange: true })

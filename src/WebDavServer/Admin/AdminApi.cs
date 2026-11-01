@@ -335,7 +335,7 @@ public sealed class AdminApi(ServerState state, Guard guard, ConnectionGate gate
         var certificate = certificates.Current();
         return new StatusInfo
         {
-            Version = Updater.RunningVersion.ToString(3),
+            Version = Updater.RunningVersion.ToString(4),
             System = System.Runtime.InteropServices.RuntimeInformation.OSDescription,
             Started = state.Started,
             OpenConnections = gate.OpenConnections,

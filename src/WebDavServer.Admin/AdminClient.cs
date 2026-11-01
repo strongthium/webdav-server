@@ -49,7 +49,7 @@ public sealed class AdminClient : IDisposable
         };
         handler.SslOptions.RemoteCertificateValidationCallback = Validate;
         http = new HttpClient(handler) { BaseAddress = new Uri(Address), Timeout = TimeSpan.FromMinutes(5) };
-        http.DefaultRequestHeaders.UserAgent.ParseAdd($"webdav-server-admin/{Updater.RunningVersion.ToString(3)}");
+        http.DefaultRequestHeaders.UserAgent.ParseAdd($"webdav-server-admin/{Updater.RunningVersion.ToString(4)}");
     }
 
     private bool Validate(object sender, X509Certificate? certificate, X509Chain? chain, SslPolicyErrors errors)
