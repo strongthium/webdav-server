@@ -36,4 +36,9 @@
   <ItemGroup>
     <ProjectReference Include="..\WebDavServer.Shared\WebDavServer.Shared.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <!-- What the install command writes to /etc/systemd/system, so that the unit for installing by hand and the installed one are the same. -->
+    <EmbeddedResource Include="..\..\deploy\webdav-server.service" LogicalName="webdav-server.service" />
+  </ItemGroup>
 </Project>

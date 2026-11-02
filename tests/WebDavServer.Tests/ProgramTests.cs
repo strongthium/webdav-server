@@ -145,6 +145,16 @@ public sealed partial class ProgramTests : IDisposable
     }
 
     [Fact]
+    public async Task ItInstallsOnlyFromTheProgramItself()
+    {
+        // Run through dotnet, as here, there's no program of its own to copy, so it stops before it changes anything.
+        var (code, output) = await RunAsync("--data", folder, "--install", "--yes");
+        Assert.Equal(1, code);
+        Assert.Contains("downloaded program", output);
+        Assert.Empty(Directory.EnumerateFileSystemEntries(folder));
+    }
+
+    [Fact]
     public void TheDataFolderIsOnlyForTheServer()
     {
         var data = Path.Combine(folder, "data");

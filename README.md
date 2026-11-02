@@ -13,7 +13,7 @@ address and get the same files. You decide whether files are kept by account, by
 address from each path, and where each account, or anyone at all, may connect from. Everything else is turned away: the socket is
 closed before a byte of TLS, and the address is banned.
 
-It's one small program with nothing to install, and a window for Windows, `webdav-server-admin`, that looks after it from across the
+It's one small program that sets itself up as a service with `--install`, and a window for Windows, `webdav-server-admin`, that looks after it from across the
 network. It runs on your own machine, and sends nothing about your files anywhere.
 
 **In short:** self-hosted WebDAV server (RFC 4918, class 1 and 2), Nextcloud-compatible sync server, upload, download and sync by
@@ -210,23 +210,35 @@ You need the [ASP.NET Core 10 Runtime](https://dotnet.microsoft.com/download/dot
 | `webdav-server-win-x64-needs-dotnet.exe` | the server, for Windows |
 | `webdav-server-admin-win-x64-needs-dotnet.exe` | the window, for Windows 10 and 11 |
 
-**On Linux,** as a service with an account of its own and no way to touch anything but its data, using [`deploy/webdav-server.service`](deploy/webdav-server.service):
+**On Linux,** with systemd:
 
 ```
-sudo useradd --system --home-dir /var/lib/webdav-server --shell /usr/sbin/nologin webdav-server
-sudo install -m 755 webdav-server-linux-x64-needs-dotnet /usr/local/bin/webdav-server
-sudo cp webdav-server.service /etc/systemd/system/
-sudo systemctl daemon-reload
-sudo systemctl enable --now webdav-server
-sudo journalctl -u webdav-server            # shows the admin port's certificate key
+chmod +x webdav-server-linux-x64-needs-dotnet
+sudo ./webdav-server-linux-x64-needs-dotnet --install
 ```
 
-**On Windows,** as a service, from an administrator's prompt:
+It finds free ports, 443 and 9443 when nothing else has them, and asks whether to use them. It asks for a certificate, and checks that it
+goes with its key, hasn't run out, and can be read by the server. Then it writes `webdav-server.json` and sets the server up as a service. The
+service runs as an account of its own, `webdav-server`, which can touch nothing but its data. The program goes in `/usr/local/bin`, the data in
+`/var/lib/webdav-server`, and [`deploy/webdav-server.service`](deploy/webdav-server.service) in `/etc/systemd/system`. When it's done, it shows
+the addresses and the admin port's certificate key. To serve a folder outside the data folder, add it to `ReadWritePaths` in the unit. The
+steps for setting it up by hand are at the top of that file.
+
+**On Windows,** from an administrator's prompt:
 
 ```
-sc.exe create webdav-server binPath= "C:\Program Files\Strongthium\webdav-server.exe" start= auto
-sc.exe start webdav-server
+webdav-server-win-x64-needs-dotnet.exe --install
 ```
+
+It asks the same questions. The program goes in `C:\Program Files\Strongthium\webdav-server`, the data in `%ProgramData%\Strongthium\webdav-server`,
+and the service runs as Local System. It also asks whether other computers may reach the WebDAV port and the admin port through Windows Firewall.
+
+| | |
+|---|---|
+| `--data FOLDER` | keeps the data somewhere else |
+| `--yes` | takes every suggestion without asking: the ports it found, a self-signed certificate, and on Windows, the WebDAV port opened in the firewall but not the admin port |
+| Installing again | keeps the `webdav-server.json`, accounts and files that are there, and only puts the program and the service back |
+| `--uninstall` | stops the server, and takes away the service, the program and the firewall rules. It asks before deleting the data folder, which is kept unless you type `delete`. Folders that paths keep elsewhere are never touched |
 
 Or just run it, to try it: `webdav-server --data D:\webdav`. WebDAV is on port 8443 and the admin port on 9443.
 

@@ -44,9 +44,16 @@ public sealed record ServerConfig
         if (File.Exists(path))
             return JsonSerializer.Deserialize<ServerConfig>(File.ReadAllText(path), Options) ?? new ServerConfig();
         var config = new ServerConfig();
-        File.WriteAllText(path, JsonSerializer.Serialize(config, Options));
-        DataFolder.Protect(path);
+        config.Save(dataFolder);
         return config;
+    }
+
+    /// <summary>Writes the configuration to a data folder, readable only by the server.</summary>
+    public void Save(string dataFolder)
+    {
+        var path = Path.Combine(dataFolder, FileName);
+        File.WriteAllText(path, JsonSerializer.Serialize(this, Options));
+        DataFolder.Protect(path);
     }
 }
 

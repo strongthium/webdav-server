@@ -1,5 +1,6 @@
 using Strongthium.WebDavServer;
 using Strongthium.WebDavServer.Config;
+using Strongthium.WebDavServer.Install;
 using Strongthium.WebDavServer.Network;
 using Strongthium.WebDavServer.Security;
 
@@ -15,6 +16,12 @@ internal static partial class Program
         database, certificates, and by default the files. The accounts, paths, whitelists and bans are managed from the
         admin window, webdav-server-admin, on Windows. The default admin login is admin / admin, which has to be changed
         the first time, and only works from this machine or a private network until it is.
+
+        --install [--yes]          sets the server up as a service that starts with the machine: systemd on Linux, the
+                                   service manager on Windows. It finds free ports and asks about a certificate, then
+                                   writes webdav-server.json. Run as root or from an administrator's prompt. --yes takes
+                                   every suggestion without asking. Installing again keeps the settings that are there.
+        --uninstall [--yes]        takes the service and the program away, and asks before it deletes the data folder
 
         On this machine, for when you can't get in, each with the server stopped:
           --set-admin-password     asks for a new admin password
@@ -44,7 +51,7 @@ internal static partial class Program
                     command = args[i];
                     argument = args[++i];
                     break;
-                case "--set-admin-password" or "--reset-admin" or "--fingerprint" or "--about" or "--update" or "--version":
+                case "--set-admin-password" or "--reset-admin" or "--fingerprint" or "--about" or "--update" or "--version" or "--install" or "--uninstall":
                     command = args[i];
                     break;
                 case "--yes":
@@ -68,6 +75,10 @@ internal static partial class Program
                 return await AboutCommand.AboutAsync(yes);
             case "--update":
                 return await AboutCommand.UpdateAsync(yes);
+            case "--install":
+                return Installer.Install(data, yes);
+            case "--uninstall":
+                return Installer.Uninstall(data, yes);
         }
 
         Updater.Tidy();
