@@ -58,9 +58,40 @@ jobs:
           path: out
           if-no-files-found: error
 
+  # Fedora 45 comes with OpenSSL 4, which .NET can't use. With Microsoft's ASP.NET Core, which brings no OpenSSL of its
+  # own, the server says to install OpenSSL 3, and then runs.
+  fedora:
+    name: Server on fedora:latest
+    needs: build
+    runs-on: ubuntu-latest
+    container: fedora:latest
+    steps:
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: webdav-server
+          path: artifacts
+      - name: Without an OpenSSL .NET can use, it says what to install
+        run: |
+          dnf -y install libstdc++
+          curl -sSL https://dot.net/v1/dotnet-install.sh -o dotnet-install.sh
+          bash dotnet-install.sh --channel 10.0 --runtime aspnetcore --install-dir /opt/dotnet
+          export DOTNET_ROOT=/opt/dotnet
+          app=artifacts/webdav-server-linux-x64-needs-dotnet/webdav-server
+          chmod +x "$app"
+          if [ -e /usr/lib64/libssl.so.3 ]; then
+            echo "OpenSSL 3 is here already: nothing to check"
+          else
+            set +e; "$app" --version 2> missing.txt; code=$?; set -e
+            cat missing.txt
+            [ "$code" = 1 ] || { echo "FAIL: exited $code, expected 1"; exit 1; }
+            grep -q 'dnf install openssl3-libs' missing.txt || { echo "FAIL: it didn't say what to install"; exit 1; }
+            dnf -y install openssl3-libs
+          fi
+          "$app" --version
+
   release:
     name: Release
-    needs: [test, build]
+    needs: [test, build, fedora]
     runs-on: ubuntu-latest
     permissions:
       contents: write

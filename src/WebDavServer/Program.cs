@@ -66,6 +66,17 @@ internal static partial class Program
             }
         }
 
+        if (OperatingSystem.IsLinux() && !HasOpenSsl())
+        {
+            Console.Error.WriteLine("""
+                This needs OpenSSL 3 (libssl.so.3), which .NET uses for TLS, and it isn't installed.
+                Fedora 45 and later come with OpenSSL 4, which .NET can't use yet. Install OpenSSL 3 beside it:
+                  sudo dnf install openssl3-libs
+                Fedora's own ASP.NET Core (sudo dnf install aspnetcore-runtime-10.0) brings it with it.
+                """);
+            return 1;
+        }
+
         switch (command)
         {
             case "--version":
@@ -183,4 +194,10 @@ internal static partial class Program
         Console.WriteLine($"{lifted} ban{(lifted == 1 ? "" : "s")} lifted.");
         return 0;
     }
+
+    /// <summary>Whether .NET will find an OpenSSL it can use. Without one, the first TLS connection or certificate doesn't
+    /// throw: it stops the whole program, so this is asked before anything else.</summary>
+    private static bool HasOpenSsl() =>
+        Environment.GetEnvironmentVariable("CLR_OPENSSL_VERSION_OVERRIDE") is { Length: > 0 }
+        || new[] { "libssl.so.3", "libssl.so.1.1" }.Any(name => System.Runtime.InteropServices.NativeLibrary.TryLoad(name, out _));
 }
