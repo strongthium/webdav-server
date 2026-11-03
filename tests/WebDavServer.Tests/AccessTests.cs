@@ -410,7 +410,15 @@ public sealed class AccessTests : IAsyncLifetime
     private static async Task<bool> Handshake(int port, System.Security.Authentication.SslProtocols protocol)
     {
         using var tcp = new System.Net.Sockets.TcpClient();
-        await tcp.ConnectAsync(IPAddress.Loopback, port);
+        try
+        {
+            await tcp.ConnectAsync(IPAddress.Loopback, port);
+        }
+        catch (System.Net.Sockets.SocketException exception) when (exception.SocketErrorCode == System.Net.Sockets.SocketError.ConnectionReset)
+        {
+            // Closed at the door so quickly that Linux reports the reset before the connection is even made.
+            return false;
+        }
         await using var ssl = new System.Net.Security.SslStream(tcp.GetStream(), false, (_, _, _, _) => true);
         try
         {
