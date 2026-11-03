@@ -138,7 +138,15 @@ public sealed class TestServer : IAsyncDisposable
     public async Task<(string Answer, bool Closed)> RawAsync(string request, int port = 0)
     {
         using var client = new TcpClient();
-        await client.ConnectAsync(IPAddress.Loopback, port == 0 ? Port : port);
+        try
+        {
+            await client.ConnectAsync(IPAddress.Loopback, port == 0 ? Port : port);
+        }
+        catch (SocketException exception) when (exception.SocketErrorCode == SocketError.ConnectionReset)
+        {
+            // Closed at the door so quickly that Linux reports the reset before the connection is even made.
+            return ("", true);
+        }
         var stream = client.GetStream();
         var answer = new StringBuilder();
         var closed = false;
