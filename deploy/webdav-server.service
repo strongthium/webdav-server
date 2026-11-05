@@ -2,7 +2,7 @@
 # sudo webdav-server --install does all of this, and writes webdav-server.json. By hand:
 #
 #   sudo useradd --system --home-dir /var/lib/webdav-server --shell /usr/sbin/nologin webdav-server
-#   sudo install -m 755 webdav-server-linux-x64-needs-dotnet /usr/local/bin/webdav-server
+#   sudo install -m 755 webdav-server /usr/local/bin/webdav-server
 #   sudo cp webdav-server.service /etc/systemd/system/
 #   sudo systemctl daemon-reload
 #   sudo systemctl enable --now webdav-server

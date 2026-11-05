@@ -6,9 +6,9 @@
     Runs the tests, then publishes three single files, each running on the .NET 10 runtime installed on the computer
     (https://dotnet.microsoft.com/download/dotnet/10.0):
 
-        webdav-server-linux-x64-needs-dotnet          the server, for x64 Linux (ASP.NET Core Runtime)
-        webdav-server-win-x64-needs-dotnet.exe        the server, for x64 Windows (ASP.NET Core Runtime)
-        webdav-server-admin-win-x64-needs-dotnet.exe  the admin window, for x64 PCs (Desktop Runtime)
+        webdav-server            the server, for x64 Linux (ASP.NET Core Runtime)
+        webdav-server.exe        the server, for x64 Windows (ASP.NET Core Runtime)
+        webdav-server-admin.exe  the admin window, for x64 PCs (Desktop Runtime)
 
     public\ is emptied and gets the new files, with VERSION and SHA256SUMS, all directly inside it. The version is read
     from VERSION; -Bump or -Version builds a new one, and VERSION is changed once the build succeeds.
@@ -73,14 +73,14 @@ if (-not $SkipTests) {
 }
 
 $builds = @(
-    @{ Project = 'src\WebDavServer\WebDavServer.csproj'; Runtime = 'linux-x64'; From = 'webdav-server'; To = 'webdav-server-linux-x64-needs-dotnet' },
-    @{ Project = 'src\WebDavServer\WebDavServer.csproj'; Runtime = 'win-x64'; From = 'webdav-server.exe'; To = 'webdav-server-win-x64-needs-dotnet.exe' },
-    @{ Project = 'src\WebDavServer.Admin\WebDavServer.Admin.csproj'; Runtime = 'win-x64'; From = 'webdav-server-admin.exe'; To = 'webdav-server-admin-win-x64-needs-dotnet.exe' }
+    @{ Project = 'src\WebDavServer\WebDavServer.csproj'; Runtime = 'linux-x64'; From = 'webdav-server'; To = 'webdav-server' },
+    @{ Project = 'src\WebDavServer\WebDavServer.csproj'; Runtime = 'win-x64'; From = 'webdav-server.exe'; To = 'webdav-server.exe' },
+    @{ Project = 'src\WebDavServer.Admin\WebDavServer.Admin.csproj'; Runtime = 'win-x64'; From = 'webdav-server-admin.exe'; To = 'webdav-server-admin.exe' }
 )
 if (Test-Path $out) { Remove-Item $out -Recurse -Force }
 foreach ($build in $builds) {
     Step $build.To
-    Invoke-Dotnet publish (Join-Path $root $build.Project) -c Release -r $build.Runtime "-p:Version=$next" -o (Join-Path $out $build.To) --nologo
+    Invoke-Dotnet publish (Join-Path $root $build.Project) -c Release -r $build.Runtime "-p:Version=$next" -o (Join-Path $out "$($build.Runtime)\$($build.To)") --nologo
 }
 
 # public\ holds only the latest build. A program in it that is running can't be replaced: that is checked first, so
@@ -97,7 +97,7 @@ else { New-Item -ItemType Directory $public | Out-Null }
 
 $sums = foreach ($build in $builds) {
     $file = Join-Path $public $build.To
-    Copy-Item (Join-Path (Join-Path $out $build.To) $build.From) $file
+    Copy-Item (Join-Path (Join-Path $out "$($build.Runtime)\$($build.To)") $build.From) $file
     '{0}  {1:N1} MB' -f $build.To, ((Get-Item $file).Length / 1MB) | Write-Host
     "$((Get-FileHash $file -Algorithm SHA256).Hash.ToLowerInvariant())  $($build.To)"
 }

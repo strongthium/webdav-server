@@ -206,9 +206,9 @@ You need the [ASP.NET Core 10 Runtime](https://dotnet.microsoft.com/download/dot
 
 | File | What it is |
 |---|---|
-| `webdav-server-linux-x64-needs-dotnet` | the server, for Linux |
-| `webdav-server-win-x64-needs-dotnet.exe` | the server, for Windows |
-| `webdav-server-admin-win-x64-needs-dotnet.exe` | the window, for Windows 10 and 11 |
+| `webdav-server` | the server, for Linux |
+| `webdav-server.exe` | the server, for Windows |
+| `webdav-server-admin.exe` | the window, for Windows 10 and 11 |
 
 On Linux, .NET needs OpenSSL 3. Fedora 45 and later come with OpenSSL 4, which .NET can't use yet: Fedora's own ASP.NET
 Core (`sudo dnf install aspnetcore-runtime-10.0`) brings OpenSSL 3 with it, and with any other .NET, install it yourself
@@ -217,8 +217,8 @@ with `sudo dnf install openssl3-libs`. Without it, the server says so and stops.
 **On Linux,** with systemd:
 
 ```
-chmod +x webdav-server-linux-x64-needs-dotnet
-sudo ./webdav-server-linux-x64-needs-dotnet --install
+chmod +x webdav-server
+sudo ./webdav-server --install
 ```
 
 It finds free ports, 443 and 9443 when nothing else has them, and asks whether to use them. It asks for a certificate, and checks that it
@@ -231,7 +231,7 @@ steps for setting it up by hand are at the top of that file.
 **On Windows,** from an administrator's prompt:
 
 ```
-webdav-server-win-x64-needs-dotnet.exe --install
+webdav-server.exe --install
 ```
 
 It asks the same questions. The program goes in `C:\Program Files\Strongthium\webdav-server`, the data in `%ProgramData%\Strongthium\webdav-server`,
